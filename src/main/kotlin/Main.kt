@@ -118,7 +118,33 @@ fun main(args: Array<String>) {
         println()
     }
 */
+    //Exercice 6:
+    print("Donner la longueur: ")
+    val longueur = readLine()?.toIntOrNull() ?: return
 
+    print("Donner la largeur: ")
+    val largeur = readLine()?.toIntOrNull() ?: return
+
+    print("Donner le symbole du rectangle: ")
+    val symbole = readLine()?.firstOrNull() ?: return
+
+    println("\nVoici le rectangle :")
+    if (largeur < 3) {
+        for (i in 1..largeur) {
+            println(symbole.toString().repeat(longueur))
+        }
+    } else {
+        for (i in 1..largeur) {
+            for (j in 1..longueur) {
+                if (i == 1 || i == largeur || j == 1 || j == longueur) {
+                    print(symbole)
+                } else {
+                    print(" ")
+                }
+            }
+            println()
+        }
+    }
 
 
 
