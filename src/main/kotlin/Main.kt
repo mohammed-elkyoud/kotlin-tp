@@ -1,154 +1,126 @@
-fun main(args: Array<String>) {
+import java.util.Scanner
 
-
-    // Exercice 1 : Mois
- /*println("Entrez un nombre entre 1 et 12 :")
-    val mois = readLine()!!.toInt()
-    when (mois) {
-        1 -> println("Janvier")
-        2 -> println("Février")
-        3 -> println("Mars")
-        4 -> println("Avril")
-        5 -> println("Mai")
-        6 -> println("Juin")
-        7 -> println("Juillet")
-        8 -> println("Août")
-        9 -> println("Septembre")
-        10 -> println("Octobre")
-        11 -> println("Novembre")
-        12 -> println("Décembre")
-        else -> println("Nombre invalide, entrez un nombre entre 1 et 12.")
-    }
- */
-
-
-
-
-    // Exercice 2 : Mois
-  /*
- println("Entrez entier 1 ")
-    val entier1 = readLine()!!.toInt()
-    println("Entrez une opération (+,-,x ou /) ")
-    val opertaion = readLine()
-    println("Entrez entier 2 ")
-    val entier2 = readLine()!!.toInt()
-    if (entier1 != null && entier2 != null && opertaion != null) {
-     val resultat = when (opertaion) {
-        "+" -> entier1 + entier2
-        "-" -> entier1 - entier2
-        "x" -> entier1 * entier2
-        "/" -> if (entier2 != 0) entier1 / entier2 else "Erreur : Division par zéro."
-        else -> "Opération invalide."
-    }
-    println("Résultat : $resultat")
-} else {
-    println("Entrée invalide.")
+abstract class Parking {
+    abstract fun ajouterVehicule(vehicule: Vehicule)
+    abstract fun retirerVehicule()
+    abstract fun afficherInfos()
 }
-*/
 
-
-
-
-    // Exercice 3 : Conversion de durées
-/*  println("Entrez un nombre de secondes :")
-    val secondes = readLine()?.toIntOrNull()
-    if (secondes != null && secondes >= 0) {
-        val jours = secondes / 86400
-        val heures = (secondes % 86400) / 3600
-        val minutes = (secondes % 3600) / 60
-        val sec = secondes % 60
-        println("Cette durée équivaut à $jours jours $heures heures $minutes minutes $sec secondes")
-    } else {
-        println("Entrée invalide. Veuillez entrer un nombre de secondes positif.")
-    }  */
-
-/*
-    // Exercice 4 : Classement de 3 nombres
-    println("Entrez trois nombres :")
-    val n1 = readLine()?.toIntOrNull()
-    val n2 = readLine()?.toIntOrNull()
-    val n3 = readLine()?.toIntOrNull()
-
-    if (n1 != null && n2 != null && n3 != null) {
-        var min = n1
-        var mid = n2
-        var max = n3
-
-        if (n2 < min) {
-            min = n2
-            mid = n1
-        }
-        if (n3 < min) {
-            min = n3
-            mid = n2
-            max = n1
-        }
-        if (n3 < mid) {
-            min = n2
-            mid = n3
-            max = n1
-        }
-
-        println("Nombres triés : $min $mid $max")
-    } else {
-        println("Entrée invalide.")
+open class Vehicule(
+    val conducteur: String,
+    val marque: String,
+    val dateArrivee: String,
+    var dateSortie: String? = null
+) {
+    open fun afficherInfos() {
+        println("Conducteur: $conducteur, Marque: $marque, Arrivée: $dateArrivee, Sortie: ${dateSortie ?: "Non définie"}")
     }
-*/
-/*
- //Exercice 5 : Affichage de motifs.
-    print("Donnez la taille du motif : ")
-    val size = readLine()?.toIntOrNull() ?: return
+}
 
-    print("Donnez le symbole du motif : ")
-    val symbol = readLine()?.firstOrNull() ?: return
+class Voiture(
+    conducteur: String,
+    marque: String,
+    val modele: String,
+    val nombreDePlaces: Int,
+    dateArrivee: String
+) : Vehicule(conducteur, marque, dateArrivee) {
+    override fun afficherInfos() {
+        println("Voiture - Modèle: $modele, Places: $nombreDePlaces")
+        super.afficherInfos()
+    }
+}
 
-    for (i in 1..size step 2) {
-        print(" ".repeat((size - i) / 2))
-        for (j in 1..i) {
-            print("$symbol ")
+class Camion(
+    conducteur: String,
+    marque: String,
+    val tonnage: Int,
+    dateArrivee: String
+) : Vehicule(conducteur, marque, dateArrivee) {
+    override fun afficherInfos() {
+        println("Camion - Tonnage: $tonnage")
+        super.afficherInfos()
+    }
+}
+
+class Utilisateur(val nomUtilisateur: String, val motDePasse: String)
+
+class ParkingTab(capacite: Int) : Parking() {
+    private val vehicules = mutableListOf<Vehicule>()
+    private val capaciteMax = capacite
+
+    override fun ajouterVehicule(vehicule: Vehicule) {
+        val espaceNecessaire = if (vehicule is Camion) 2 else 1
+        if (vehicules.size + espaceNecessaire <= capaciteMax) {
+            vehicules.add(vehicule)
+            println("Véhicule ajouté au parking.")
+        } else {
+            println("Parking plein ! Impossible d'ajouter le véhicule.")
         }
-        println()
     }
 
-    for (i in size - 2 downTo 1 step 2) {
-        print(" ".repeat((size - i) / 2))
-        for (j in 1..i) {
-            print("$symbol ")
+    override fun retirerVehicule() {
+        if (vehicules.isNotEmpty()) {
+            val vehicule = vehicules.removeAt(0)
+            println("Véhicule retiré: ")
+            vehicule.afficherInfos()
+        } else {
+            println("Aucun véhicule à retirer.")
         }
-        println()
     }
-*/
-    //Exercice 6:
-    print("Donner la longueur: ")
-    val longueur = readLine()?.toIntOrNull() ?: return
 
-    print("Donner la largeur: ")
-    val largeur = readLine()?.toIntOrNull() ?: return
+    override fun afficherInfos() {
+        println("Parking contient ${vehicules.size} véhicules :")
+        vehicules.forEach { it.afficherInfos() }
+    }
+}
 
-    print("Donner le symbole du rectangle: ")
-    val symbole = readLine()?.firstOrNull() ?: return
+fun main() {
+    val parking = ParkingTab(5)
+    val scanner = Scanner(System.`in`)
 
-    println("\nVoici le rectangle :")
-    if (largeur < 3) {
-        for (i in 1..largeur) {
-            println(symbole.toString().repeat(longueur))
-        }
-    } else {
-        for (i in 1..largeur) {
-            for (j in 1..longueur) {
-                if (i == 1 || i == largeur || j == 1 || j == longueur) {
-                    print(symbole)
-                } else {
-                    print(" ")
-                }
+    while (true) {
+        println("\nMenu de gestion du parking")
+        println("1. Ajouter une voiture")
+        println("2. Ajouter un camion")
+        println("3. Retirer un véhicule")
+        println("4. Afficher les véhicules")
+        println("5. Quitter")
+        print("Votre choix: ")
+
+        when (scanner.nextInt()) {
+            1 -> {
+                println("Ajout d'une voiture")
+                print("Conducteur: ")
+                val conducteur = scanner.next()
+                print("Marque: ")
+                val marque = scanner.next()
+                print("Modèle: ")
+                val modele = scanner.next()
+                print("Nombre de places: ")
+                val places = scanner.nextInt()
+                print("Date d'arrivée: ")
+                val dateArrivee = scanner.next()
+                parking.ajouterVehicule(Voiture(conducteur, marque, modele, places, dateArrivee))
             }
-            println()
+            2 -> {
+                println("Ajout d'un camion")
+                print("Conducteur: ")
+                val conducteur = scanner.next()
+                print("Marque: ")
+                val marque = scanner.next()
+                print("Tonnage: ")
+                val tonnage = scanner.nextInt()
+                print("Date d'arrivée: ")
+                val dateArrivee = scanner.next()
+                parking.ajouterVehicule(Camion(conducteur, marque, tonnage, dateArrivee))
+            }
+            3 -> parking.retirerVehicule()
+            4 -> parking.afficherInfos()
+            5 -> {
+                println("Fin du programme.")
+                break
+            }
+            else -> println("Choix invalide, veuillez réessayer.")
         }
     }
-
-
-
-
-
-
 }
